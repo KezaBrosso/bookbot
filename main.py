@@ -1,45 +1,49 @@
 def main():
-    with open('books/frankenstein.txt') as f:
-        file_contents = f.read()
-    word_count = count_words(file_contents)
-    dict = count_characters(file_contents)
-    chars_sorted = chars_to_sort(dict)
-    print_report(word_count, chars_sorted)
+    path_to_file = "books/frankenstein.txt"
+    file_contents = get_text(path_to_file)
+    word_list = file_contents.split()
+    word_count = count_words(word_list)
+    character_count = get_char_count(file_contents)
+    sorted_list = to_be_sorted(character_count)
 
-def count_words(words):
-    total_words = words.split()
-    return len(total_words)
+    print(f"--- Begin report of {path_to_file} ---")
+    print(f"{word_count} words found in the document")
+    print()
+
+    for item in sorted_list:
+        print(f"The {item['char']} character was found {item['num']} times")
     
-def count_characters(text):
+    print("--- End Report ---")
+
+
+def get_text(path):
+    with open(path) as f:
+        return f.read()
+
+def count_words(text):
+    return len(text)
+
+def get_char_count(text):
+    my_dict = {}
     lowered_text = text.lower()
-    new_dict = {}
     for char in lowered_text:
-        if char in new_dict:
-            new_dict[char] += 1
+        if char in my_dict:
+            my_dict[char] += 1
         else:
-            new_dict[char] = 1
-    return(new_dict)
+            my_dict[char] = 1
+    return my_dict
 
-def chars_to_sort(dict):
-    sorted_list = []
-    for ch in dict:
-        sorted_list.append({"char": ch, "num": dict[ch]})
-    sorted_list.sort(reverse=True, key=sort_on)
-    return sorted_list
+def sort_on(dict):
+    return dict["num"]
 
-def sort_on(dict_item):
-    return dict_item["num"]
-
-def print_report(words, sorted_dict):
-    print("--- Begin report of books/frankenstein.txt ---")
-    print(str(words) + " words found in document")
-    print("")
-
-    for char in sorted_dict:
-        if not char["char"].isalpha():
-            continue
-        print(f"the '{char['char']}' character was found {char['num']} times")
-
-    print("--- End report ---")
+def to_be_sorted(unsorted_dict):
+    new_list = []
+    for item in unsorted_dict:
+        if item.isalpha() == True:
+            new_list.append({"char": item, "num":unsorted_dict[item]})
+        else:
+            pass
+    new_list.sort(reverse=True, key=sort_on)
+    return new_list
 
 main()
